@@ -14,12 +14,12 @@ import java.util.Scanner;
  */
 public class Cryptage {
     static public void cryptage() {
-        ArrayList mot1 = new ArrayList();
-        String mot;
+        ArrayList motCarac = new ArrayList();
+        String motUtilisateur;
         int taileDuBourage;
         System.out.println("Entrer le mot a crypter");
         Scanner entree1 = new Scanner(System.in);
-        mot = entree1.nextLine();
+        motUtilisateur = entree1.nextLine();
         System.out.println("Donner la taille de la clef");
         entree1 = new Scanner(System.in);
         taileDuBourage = entree1.nextInt();
@@ -27,27 +27,24 @@ public class Cryptage {
             'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
         
         //String -> ArrayList
-        for (int i = 0; i < mot.length(); i++) {
-            mot1.add(mot.charAt(i));
+        for (int i = 0; i < motUtilisateur.length(); i++) {
+            motCarac.add(motUtilisateur.charAt(i));
         }
 
         //Bourage
-        mot1.add('/');
-        int y = 0;
+        motCarac.add('/');
         int bourageInt;
-        while (y < taileDuBourage) {
+        for (int i = 0; i < taileDuBourage; i++) {
             bourageInt = (int) (Math.random() * 36);
-            mot1.add(tableauCaractere[bourageInt]);
-            y++;
+            motCarac.add(tableauCaractere[bourageInt]);
         }
 
         //Passage en Ascii
         ArrayList codeCrypte = new ArrayList();
         ArrayList passageAsciiCode = new ArrayList();
-        int testLongueur = mot1.size();
-        int cas = 0;
+        int testLongueur = motCarac.size();
         for (int i = 0; i < testLongueur; i++) {
-            char ascii = (char) (mot1.get(i));
+            char ascii = (char) (motCarac.get(i));
             int asciiDone = (int) (ascii);
             passageAsciiCode.add(asciiDone);
         }
@@ -64,27 +61,13 @@ public class Cryptage {
         //Cryptage
         for (int i = 0; i < testLongueur; i++) {
             if (i == 0) {
-                cas = 0;
+                codeCrypte.add((int) passageAsciiCode.get(i + 1) + (int) passageAsciiCode.get(i) + (int) clefCryptage.get(i));
             }
-            if (i > 0 && i < testLongueur - 2) {
-                cas = 1;
+            else if (i > 0 && i < testLongueur - 1) {
+                codeCrypte.add((int) codeCrypte.get(i - 1) + (int) passageAsciiCode.get(i) + (int) passageAsciiCode.get(i + 1) + (int) clefCryptage.get(i));
             }
-            if (i == testLongueur - 1) {
-                cas = 2;
-            }
-            switch (cas) {
-
-                case 0:
-                    codeCrypte.add((int) passageAsciiCode.get(i + 1) + (int) passageAsciiCode.get(i) + (int) clefCryptage.get(i));
-                    break;
-
-                case 1:
-                    codeCrypte.add((int) codeCrypte.get(i - 1) + (int) passageAsciiCode.get(i) + (int) passageAsciiCode.get(i + 1) + (int) clefCryptage.get(i));
-                    break;
-
-                case 2:
-                    codeCrypte.add((int) codeCrypte.get(i - 1) + (int) passageAsciiCode.get(i) + (int) clefCryptage.get(i));
-                    break;
+            else if (i == testLongueur - 1) {
+                codeCrypte.add((int) codeCrypte.get(i - 1) + (int) passageAsciiCode.get(i) + (int) clefCryptage.get(i));
             }
         }
         
